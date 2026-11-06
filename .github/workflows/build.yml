@@ -29,6 +29,7 @@ jobs:
 
   windows:
     name: Windows (EXE)
+    if: github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +47,7 @@ jobs:
 
   ios:
     name: iOS (без подписи)
+    if: github.event_name == 'workflow_dispatch'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
