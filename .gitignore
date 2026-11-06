@@ -21,3 +21,4 @@ pubspec.lock
 .vscode/
 *.iml
 .DS_Store
+*.apk
