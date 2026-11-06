@@ -1,0 +1,23 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# Платформенные папки генерируются командой `dart run tool/setup.dart`
+/android/
+/ios/
+/windows/
+/linux/
+/macos/
+/web/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
