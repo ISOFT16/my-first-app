@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   android:
     name: Android (APK)
@@ -28,6 +31,15 @@ jobs:
         with:
           name: FoxBrowser-android
           path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Выложить APK в Releases
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk FoxBrowser.apk
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest FoxBrowser.apk --target "$GITHUB_SHA" \
+            --title "Fox Browser (последняя сборка)" \
+            --notes "Скачайте FoxBrowser.apk и установите на Android."
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   windows:
     name: Windows (EXE)
