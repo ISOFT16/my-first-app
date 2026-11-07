@@ -171,12 +171,5 @@ ThemeData buildTheme(ColorScheme scheme) {
       color: scheme.primary,
       linearTrackColor: Colors.transparent,
     ),
-    pageTransitionsTheme: const PageTransitionsTheme(
-      builders: {
-        TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
-        TargetPlatform.windows: FadeForwardsPageTransitionsBuilder(),
-        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-      },
-    ),
   );
 }
