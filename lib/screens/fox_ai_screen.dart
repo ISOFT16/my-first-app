@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
   final _input = TextEditingController();
   final _scroll = ScrollController();
   bool _thinking = false;
+  int _wait = 0; // секунд до следующей попытки при бесплатном лимите
+  Timer? _countdown;
 
   static const _suggestions = [
     'Объясни простыми словами, как работает интернет',
@@ -36,6 +39,7 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
 
   @override
   void dispose() {
+    _countdown?.cancel();
     _input.dispose();
     _scroll.dispose();
     super.dispose();
@@ -52,13 +56,23 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
     _scrollDown();
     AiMessage reply;
     try {
-      final answer = await _ai.ask(
-        _chat,
-        base: widget.state.aiBase,
-        key: widget.state.aiKey,
-        model: widget.state.aiModel,
-      );
-      reply = AiMessage(fromUser: false, text: answer);
+      String? answer;
+      for (var attempt = 0; answer == null; attempt++) {
+        try {
+          answer = await _ai.ask(
+            _chat,
+            base: widget.state.aiBase,
+            key: widget.state.aiKey,
+            model: widget.state.aiModel,
+          );
+        } on FoxAiRateLimit catch (e) {
+          // Бесплатный лимит: лиса сама подождёт и спросит ещё раз.
+          if (attempt >= 2 || !mounted) rethrow;
+          await _waitFor(e.seconds + 1);
+          if (!mounted) return;
+        }
+      }
+      reply = AiMessage(fromUser: false, text: answer!);
     } catch (e) {
       final msg = e is FoxAiException
           ? e.message
@@ -72,6 +86,25 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
     });
     widget.state.saveAiChat();
     _scrollDown();
+  }
+
+  Future<void> _waitFor(int seconds) async {
+    setState(() => _wait = seconds);
+    _countdown?.cancel();
+    final done = Completer<void>();
+    _countdown = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) {
+        t.cancel();
+        if (!done.isCompleted) done.complete();
+        return;
+      }
+      setState(() => _wait = max(0, _wait - 1));
+      if (_wait <= 0) {
+        t.cancel();
+        if (!done.isCompleted) done.complete();
+      }
+    });
+    await done.future;
   }
 
   void _retry() {
@@ -137,7 +170,7 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
                     padding: const EdgeInsets.fromLTRB(14, 8, 14, 16),
                     itemCount: _chat.length + (_thinking ? 1 : 0),
                     itemBuilder: (context, i) {
-                      if (i == _chat.length) return const _ThinkingBubble();
+                      if (i == _chat.length) return _ThinkingBubble(wait: _wait);
                       final m = _chat[i];
                       return _Bubble(
                         message: m,
@@ -294,7 +327,9 @@ class _Bubble extends StatelessWidget {
 
 /// «Лиса думает» — три прыгающие точки.
 class _ThinkingBubble extends StatefulWidget {
-  const _ThinkingBubble();
+  const _ThinkingBubble({this.wait = 0});
+
+  final int wait;
 
   @override
   State<_ThinkingBubble> createState() => _ThinkingBubbleState();
@@ -319,6 +354,20 @@ class _ThinkingBubbleState extends State<_ThinkingBubble> with SingleTickerProvi
         children: [
           const FoxLogo(size: 26),
           const SizedBox(width: 6),
+          if (widget.wait > 0)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(color: scheme.outlineVariant),
+              ),
+              child: Text(
+                'Лиса переводит дух… отвечу через ${widget.wait} сек',
+                style: TextStyle(color: scheme.onSurfaceVariant),
+              ),
+            )
+          else
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
             decoration: BoxDecoration(

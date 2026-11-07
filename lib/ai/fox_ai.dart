@@ -23,6 +23,12 @@ class FoxAiException implements Exception {
   String toString() => message;
 }
 
+/// Бесплатный режим ограничен: примерно один ответ в 45 секунд.
+class FoxAiRateLimit extends FoxAiException {
+  FoxAiRateLimit(this.seconds) : super('Бесплатный Fox AI отвечает раз в 45 секунд. Подождите $seconds сек.');
+  final int seconds;
+}
+
 /// Fox AI — ИИ-помощник Fox Browser.
 ///
 /// По умолчанию работает бесплатно и без ключа через открытый сервис
@@ -78,6 +84,8 @@ class FoxAi {
         '',
         extra: {'referrer': 'foxbrowser', 'private': true},
       );
+    } on FoxAiRateLimit {
+      rethrow;
     } catch (_) {
       final question = recent.lastWhere((m) => m.fromUser).text;
       final uri = Uri.parse('$_freeTextUrl${Uri.encodeComponent(question)}').replace(
@@ -90,6 +98,7 @@ class FoxAi {
       );
       final r = await _client.get(uri).timeout(_timeout);
       final body = utf8.decode(r.bodyBytes).trim();
+      _checkRateLimit(r.statusCode, body);
       if (r.statusCode != 200 || body.isEmpty) {
         throw FoxAiException('Fox AI сейчас недоступен (код ${r.statusCode}). Попробуйте ещё раз чуть позже.');
       }
@@ -114,15 +123,31 @@ class FoxAi {
           body: jsonEncode({'model': model, 'messages': messages, ...extra}),
         )
         .timeout(_timeout);
+    final text = utf8.decode(r.bodyBytes);
+    _checkRateLimit(r.statusCode, text);
     if (r.statusCode != 200) {
       throw FoxAiException('Сервер ИИ ответил ошибкой ${r.statusCode}.');
     }
-    final data = jsonDecode(utf8.decode(r.bodyBytes));
-    final content = data is Map ? data['choices']?[0]?['message']?['content'] : null;
-    if (content is! String || content.trim().isEmpty) {
+    final data = jsonDecode(text);
+    String? content;
+    if (data is Map) {
+      final choices = data['choices'];
+      if (choices is List && choices.isNotEmpty && choices.first is Map) {
+        final message = (choices.first as Map)['message'];
+        if (message is Map && message['content'] is String) content = message['content'] as String;
+      }
+    }
+    if (content == null || content.trim().isEmpty) {
       throw FoxAiException('Сервер ИИ прислал пустой ответ.');
     }
     return clean(content);
+  }
+
+  static void _checkRateLimit(int status, String body) {
+    if (status == 402 || status == 429 || body.contains('Free limit reached')) {
+      final m = RegExp(r'wait (\d+) second').firstMatch(body);
+      throw FoxAiRateLimit(int.tryParse(m?.group(1) ?? '') ?? 45);
+    }
   }
 
   static String _join(String base, String path) =>
