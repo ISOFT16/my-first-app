@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../browser_state.dart';
 import '../theme.dart';
 import '../url_utils.dart';
+import '../game/fox_run_game.dart';
 import 'fox_logo.dart';
 
 /// Стартовая страница Fox: приветствие, поиск и плитки любимых сайтов.
@@ -58,19 +59,26 @@ class HomePage extends StatelessWidget {
               // Шапка с логотипом.
               Row(
                 children: [
-                  const FoxLogo(size: 40),
-                  const SizedBox(width: 10),
-                  Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                        text: 'fox',
-                        style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800, color: scheme.primary),
-                      ),
-                      TextSpan(
-                        text: ' browser',
-                        style: text.titleLarge?.copyWith(fontWeight: FontWeight.w300),
-                      ),
-                    ]),
+                  _SecretTitle(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const FoxLogo(size: 40),
+                        const SizedBox(width: 10),
+                        Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                              text: 'fox',
+                              style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800, color: scheme.primary),
+                            ),
+                            TextSpan(
+                              text: ' browser',
+                              style: text.titleLarge?.copyWith(fontWeight: FontWeight.w300),
+                            ),
+                          ]),
+                        ),
+                      ],
+                    ),
                   ),
                   const Spacer(),
                   if (incognito)
@@ -227,6 +235,48 @@ class _Tile extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Пасхалка: 5 быстрых нажатий на «fox browser» открывают игру «Лис в бегах».
+class _SecretTitle extends StatefulWidget {
+  const _SecretTitle({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_SecretTitle> createState() => _SecretTitleState();
+}
+
+class _SecretTitleState extends State<_SecretTitle> {
+  int _taps = 0;
+  DateTime _lastTap = DateTime(0);
+
+  void _onTap() {
+    final now = DateTime.now();
+    _taps = now.difference(_lastTap) < const Duration(milliseconds: 1500) ? _taps + 1 : 1;
+    _lastTap = now;
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
+    if (_taps >= 5) {
+      _taps = 0;
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const FoxRunGame()));
+    } else if (_taps >= 3) {
+      final left = 5 - _taps;
+      messenger.showSnackBar(SnackBar(
+        duration: const Duration(milliseconds: 900),
+        content: Text(left == 1 ? 'Ещё одно нажатие… 🦊' : 'Ещё $left нажатия…'),
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: _onTap,
+      child: widget.child,
     );
   }
 }
