@@ -27,7 +27,7 @@ String resolveInput(String input, SearchEngine engine) {
   return engine.queryUrl + Uri.encodeQueryComponent(text);
 }
 
-/// Короткое представление адреса для адресной строки (как в Chrome на Pixel).
+/// Короткое представление адреса для адресной строки (только домен).
 String displayHost(String? url) {
   if (url == null || url.isEmpty) return '';
   final uri = Uri.tryParse(url);

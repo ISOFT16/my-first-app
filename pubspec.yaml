@@ -1,5 +1,5 @@
 name: fox_browser
-description: "Fox Browser — кроссплатформенный браузер в стиле Google Pixel (Material You)."
+description: "Fox Browser — кроссплатформенный браузер в собственном песочно-бежевом стиле."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -10,13 +10,24 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_inappwebview: ^6.1.5
-  dynamic_color: ^1.7.0
   shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: assets/icon.png
+  adaptive_icon_background: "#F3EADF"
+  adaptive_icon_foreground: assets/icon_foreground.png
+  windows:
+    generate: true
+    image_path: assets/icon.png
 
 flutter:
   uses-material-design: true

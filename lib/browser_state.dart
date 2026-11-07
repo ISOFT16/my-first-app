@@ -48,7 +48,6 @@ class BrowserTab {
 class BrowserState extends ChangeNotifier {
   static const _kTheme = 'theme';
   static const _kEngine = 'engine';
-  static const _kDynamic = 'dynamic_color';
   static const _kHistory = 'history';
   static const _kBookmarks = 'bookmarks';
   static const _maxHistory = 500;
@@ -63,7 +62,6 @@ class BrowserState extends ChangeNotifier {
 
   ThemeMode themeMode = ThemeMode.system;
   SearchEngine searchEngine = SearchEngine.google;
-  bool useDynamicColor = true;
   List<PageEntry> history = [];
   List<PageEntry> bookmarks = [];
 
@@ -74,7 +72,6 @@ class BrowserState extends ChangeNotifier {
     themeMode = ThemeMode.values[(_prefs.getInt(_kTheme) ?? 0).clamp(0, 2)];
     final engine = _prefs.getInt(_kEngine) ?? 0;
     searchEngine = SearchEngine.values[engine.clamp(0, SearchEngine.values.length - 1)];
-    useDynamicColor = _prefs.getBool(_kDynamic) ?? true;
     history = _readList(_kHistory);
     bookmarks = _readList(_kBookmarks);
     tabs.add(BrowserTab());
@@ -232,13 +229,6 @@ class BrowserState extends ChangeNotifier {
   void setThemeMode(ThemeMode mode) {
     themeMode = mode;
     _prefs.setInt(_kTheme, mode.index);
-    settingsTick.value++;
-    notifyListeners();
-  }
-
-  void setDynamicColor(bool value) {
-    useDynamicColor = value;
-    _prefs.setBool(_kDynamic, value);
     settingsTick.value++;
     notifyListeners();
   }

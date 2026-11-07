@@ -23,6 +23,17 @@ Future<void> main() async {
   _patchIos();
   _patchWindows();
 
+  // Своя иконка приложения (assets/icon.png) для Android, iOS и Windows.
+  for (final cmd in [
+    ['flutter', 'pub', 'get'],
+    ['dart', 'run', 'flutter_launcher_icons'],
+  ]) {
+    final r = await Process.run(cmd.first, cmd.sublist(1), runInShell: true);
+    stdout.write(r.stdout);
+    stderr.write(r.stderr);
+    if (r.exitCode != 0) exit(r.exitCode);
+  }
+
   // flutter create кладёт свой пример теста, который ссылается на MyApp.
   final sample = File('test/widget_test.dart');
   if (sample.existsSync() && sample.readAsStringSync().contains('MyApp')) sample.deleteSync();

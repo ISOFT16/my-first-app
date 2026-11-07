@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../browser_state.dart';
 import '../url_utils.dart';
 
-/// Адресная строка-«пилюля» в стиле Pixel.
+/// Адресная капсула Fox: адрес по центру, слева значок, справа обновление.
 class Omnibox extends StatefulWidget {
   const Omnibox({super.key, required this.state});
 
@@ -51,39 +51,58 @@ class _OmniboxState extends State<Omnibox> {
     super.dispose();
   }
 
-  IconData get _leadingIcon {
-    if (_focus.hasFocus || tab.isHome) return Icons.search;
-    if (tab.incognito) return Icons.privacy_tip_outlined;
-    return (tab.url?.startsWith('https://') ?? false) ? Icons.lock_outline : Icons.info_outline;
-  }
-
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      height: 48,
+    final focused = _focus.hasFocus;
+    final secure = tab.url?.startsWith('https://') ?? false;
+
+    IconData leading;
+    if (focused || tab.isHome) {
+      leading = Icons.search_rounded;
+    } else if (tab.incognito) {
+      leading = Icons.visibility_off_rounded;
+    } else {
+      leading = secure ? Icons.lock_rounded : Icons.lock_open_rounded;
+    }
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      height: 46,
       decoration: BoxDecoration(
-        color: scheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(24),
+        color: focused ? scheme.surfaceContainerLowest : scheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(23),
+        border: Border.all(
+          color: focused ? scheme.primary : Colors.transparent,
+          width: 1.5,
+        ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.only(left: 14, right: 4),
       child: Row(
         children: [
-          Icon(_leadingIcon, size: 20, color: scheme.onSurfaceVariant),
-          const SizedBox(width: 10),
+          Icon(leading, size: 18, color: scheme.primary),
+          const SizedBox(width: 8),
           Expanded(
             child: TextField(
               controller: _controller,
               focusNode: _focus,
+              textAlign: focused ? TextAlign.start : TextAlign.center,
               keyboardType: TextInputType.url,
               textInputAction: TextInputAction.go,
               autocorrect: false,
-              style: Theme.of(context).textTheme.bodyLarge,
+              cursorColor: scheme.primary,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: focused ? FontWeight.w400 : FontWeight.w600,
+                    letterSpacing: focused ? 0 : 0.3,
+                  ),
               decoration: InputDecoration(
                 isCollapsed: true,
                 border: InputBorder.none,
-                hintText: 'Поиск или URL',
-                hintStyle: TextStyle(color: scheme.onSurfaceVariant),
+                hintText: 'Куда отправимся?',
+                hintStyle: TextStyle(
+                  color: scheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
               onSubmitted: (value) {
                 widget.state.openInput(value);
@@ -91,23 +110,21 @@ class _OmniboxState extends State<Omnibox> {
               },
             ),
           ),
-          if (_focus.hasFocus && _controller.text.isNotEmpty)
+          if (focused && _controller.text.isNotEmpty)
             IconButton(
               visualDensity: VisualDensity.compact,
-              icon: const Icon(Icons.close, size: 20),
+              icon: Icon(Icons.cancel_rounded, size: 20, color: scheme.onSurfaceVariant),
               onPressed: () => setState(_controller.clear),
             )
           else if (!tab.isHome)
             IconButton(
               visualDensity: VisualDensity.compact,
-              tooltip: 'Закладка',
-              icon: Icon(
-                widget.state.isBookmarked(tab.url) ? Icons.star : Icons.star_border,
-                size: 22,
-                color: widget.state.isBookmarked(tab.url) ? scheme.primary : scheme.onSurfaceVariant,
-              ),
-              onPressed: widget.state.toggleBookmark,
-            ),
+              tooltip: 'Обновить',
+              icon: Icon(Icons.refresh_rounded, size: 20, color: scheme.onSurfaceVariant),
+              onPressed: widget.state.reload,
+            )
+          else
+            const SizedBox(width: 10),
         ],
       ),
     );

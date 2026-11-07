@@ -1,4 +1,3 @@
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'browser_state.dart';
@@ -21,25 +20,13 @@ class FoxBrowserApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<int>(
       valueListenable: state.settingsTick,
-      builder: (context, _, __) => DynamicColorBuilder(
-        builder: (lightDynamic, darkDynamic) {
-          final useDynamic =
-              state.useDynamicColor && lightDynamic != null && darkDynamic != null;
-          final light = useDynamic
-              ? lightDynamic.harmonized()
-              : ColorScheme.fromSeed(seedColor: foxOrange);
-          final dark = useDynamic
-              ? darkDynamic.harmonized()
-              : ColorScheme.fromSeed(seedColor: foxOrange, brightness: Brightness.dark);
-          return MaterialApp(
-            title: 'Fox Browser',
-            debugShowCheckedModeBanner: false,
-            theme: buildTheme(light),
-            darkTheme: buildTheme(dark),
-            themeMode: state.themeMode,
-            home: BrowserScreen(state: state),
-          );
-        },
+      builder: (context, _, __) => MaterialApp(
+        title: 'Fox Browser',
+        debugShowCheckedModeBanner: false,
+        theme: buildTheme(foxLightScheme()),
+        darkTheme: buildTheme(foxDarkScheme()),
+        themeMode: state.themeMode,
+        home: BrowserScreen(state: state),
       ),
     );
   }
