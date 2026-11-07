@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ai/fox_ai.dart';
 import 'url_utils.dart';
 
 /// Запись истории или закладка.
@@ -50,6 +51,10 @@ class BrowserState extends ChangeNotifier {
   static const _kEngine = 'engine';
   static const _kHistory = 'history';
   static const _kBookmarks = 'bookmarks';
+  static const _kAiBase = 'ai_base';
+  static const _kAiKey = 'ai_key';
+  static const _kAiModel = 'ai_model';
+  static const _kAiChat = 'ai_chat';
   static const _maxHistory = 500;
 
   late SharedPreferences _prefs;
@@ -65,6 +70,12 @@ class BrowserState extends ChangeNotifier {
   List<PageEntry> history = [];
   List<PageEntry> bookmarks = [];
 
+  // Fox AI.
+  String aiBase = '';
+  String aiKey = '';
+  String aiModel = '';
+  List<AiMessage> aiChat = [];
+
   BrowserTab get current => tabs[currentIndex];
 
   Future<void> load() async {
@@ -74,6 +85,19 @@ class BrowserState extends ChangeNotifier {
     searchEngine = SearchEngine.values[engine.clamp(0, SearchEngine.values.length - 1)];
     history = _readList(_kHistory);
     bookmarks = _readList(_kBookmarks);
+    aiBase = _prefs.getString(_kAiBase) ?? '';
+    aiKey = _prefs.getString(_kAiKey) ?? '';
+    aiModel = _prefs.getString(_kAiModel) ?? '';
+    try {
+      final raw = _prefs.getString(_kAiChat);
+      if (raw != null) {
+        aiChat = (jsonDecode(raw) as List)
+            .map((e) => AiMessage.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (_) {
+      aiChat = [];
+    }
     tabs.add(BrowserTab());
   }
 
@@ -230,6 +254,22 @@ class BrowserState extends ChangeNotifier {
     themeMode = mode;
     _prefs.setInt(_kTheme, mode.index);
     settingsTick.value++;
+    notifyListeners();
+  }
+
+  void saveAiChat() {
+    final keep = aiChat.where((m) => !m.isError).toList();
+    final tail = keep.length > 100 ? keep.sublist(keep.length - 100) : keep;
+    _prefs.setString(_kAiChat, jsonEncode(tail.map((m) => m.toJson()).toList()));
+  }
+
+  void setAiServer({required String base, required String key, required String model}) {
+    aiBase = base.trim();
+    aiKey = key.trim();
+    aiModel = model.trim();
+    _prefs.setString(_kAiBase, aiBase);
+    _prefs.setString(_kAiKey, aiKey);
+    _prefs.setString(_kAiModel, aiModel);
     notifyListeners();
   }
 

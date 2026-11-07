@@ -41,6 +41,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
+  ai-check:
+    name: Проверка Fox AI (бесплатный сервер)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Задать тестовый вопрос
+        run: |
+          curl -sS -m 90 -X POST https://text.pollinations.ai/openai \
+            -H 'Content-Type: application/json' \
+            -d '{"model":"openai","referrer":"foxbrowser","private":true,"messages":[{"role":"system","content":"Ты Fox AI."},{"role":"user","content":"Привет! Кто ты и какая столица Франции? Ответь коротко."}]}' \
+            -w '\nHTTP %{http_code}\n' | tail -c 1500
+          echo "----- GET fallback -----"
+          curl -sS -m 90 "https://text.pollinations.ai/$(python3 -c 'import urllib.parse;print(urllib.parse.quote("Сколько будет 2+2? Ответь одним числом."))')?model=openai&private=true&referrer=foxbrowser" \
+            -w '\nHTTP %{http_code}\n' | tail -c 800
+
   windows:
     name: Windows (EXE)
     if: github.event_name == 'workflow_dispatch'

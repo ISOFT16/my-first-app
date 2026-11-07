@@ -9,6 +9,8 @@ class SettingsScreen extends StatelessWidget {
 
   final BrowserState state;
 
+  void _editAiServer(BuildContext context) => _editAiServerDialog(context, state);
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -87,6 +89,32 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
               _Section(
+                title: 'Fox AI',
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.auto_awesome_rounded),
+                    title: const Text('Сервер ИИ'),
+                    subtitle: Text(state.aiBase.isEmpty
+                        ? 'Бесплатный (без ключа)'
+                        : 'Свой: ${state.aiBase}'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => _editAiServer(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.delete_outline_rounded),
+                    title: const Text('Очистить чат Fox AI'),
+                    subtitle: Text('Сообщений: ${state.aiChat.length}'),
+                    onTap: state.aiChat.isEmpty
+                        ? null
+                        : () {
+                            state.aiChat.clear();
+                            state.saveAiChat();
+                            state.touch();
+                          },
+                  ),
+                ],
+              ),
+              _Section(
                 title: 'Приватность',
                 children: [
                   ListTile(
@@ -109,6 +137,63 @@ class SettingsScreen extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+Future<void> _editAiServerDialog(BuildContext context, BrowserState state) async {
+  final base = TextEditingController(text: state.aiBase);
+  final key = TextEditingController(text: state.aiKey);
+  final model = TextEditingController(text: state.aiModel);
+  final save = await showDialog<bool>(
+    context: context,
+    builder: (c) => AlertDialog(
+      icon: const Icon(Icons.auto_awesome_rounded),
+      title: const Text('Сервер Fox AI'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Оставьте адрес пустым — Fox AI будет работать бесплатно без ключа. '
+              'Или укажите любой OpenAI-совместимый сервер со своим ключом.',
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: base,
+              keyboardType: TextInputType.url,
+              decoration: const InputDecoration(
+                labelText: 'Адрес API',
+                hintText: 'https://api.openai.com/v1',
+              ),
+            ),
+            TextField(
+              controller: key,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Ключ API'),
+            ),
+            TextField(
+              controller: model,
+              decoration: const InputDecoration(labelText: 'Модель', hintText: 'gpt-4o-mini'),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            base.clear();
+            key.clear();
+            model.clear();
+            Navigator.pop(c, true);
+          },
+          child: const Text('Бесплатный'),
+        ),
+        FilledButton(onPressed: () => Navigator.pop(c, true), child: const Text('Сохранить')),
+      ],
+    ),
+  );
+  if (save ?? false) {
+    state.setAiServer(base: base.text, key: key.text, model: model.text);
   }
 }
 

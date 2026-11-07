@@ -6,6 +6,7 @@ import '../theme.dart';
 import '../widgets/home_page.dart';
 import '../widgets/omnibox.dart';
 import '../widgets/tab_webview.dart';
+import 'fox_ai_screen.dart';
 import 'pages_list_screen.dart';
 import 'settings_screen.dart';
 import 'tabs_screen.dart';
@@ -306,6 +307,20 @@ void showFoxMenu(BuildContext context, BrowserState state) {
                 children: [for (final i in items) _MenuTile(item: i)],
               ),
               const SizedBox(height: 12),
+              Material(
+                color: scheme.primary,
+                borderRadius: BorderRadius.circular(18),
+                child: ListTile(
+                  iconColor: scheme.onPrimary,
+                  textColor: scheme.onPrimary,
+                  leading: const Icon(Icons.auto_awesome_rounded),
+                  title: const Text('Fox AI', style: TextStyle(fontWeight: FontWeight.w700)),
+                  subtitle: Text('Спросите что угодно', style: TextStyle(color: scheme.onPrimary.withValues(alpha: 0.8))),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => open(FoxAiScreen(state: state)),
+                ),
+              ),
+              const SizedBox(height: 8),
               Material(
                 color: scheme.surfaceContainerHigh,
                 borderRadius: BorderRadius.circular(18),

@@ -4,6 +4,7 @@ import '../browser_state.dart';
 import '../theme.dart';
 import '../url_utils.dart';
 import '../game/fox_run_game.dart';
+import '../screens/fox_ai_screen.dart';
 import 'fox_logo.dart';
 
 /// Стартовая страница Fox: приветствие, поиск и плитки любимых сайтов.
@@ -108,6 +109,8 @@ class HomePage extends StatelessWidget {
               ],
               const SizedBox(height: 28),
               _SearchCapsule(state: state),
+              const SizedBox(height: 12),
+              _AskAiButton(state: state),
               if (!incognito) ...[
                 const SizedBox(height: 36),
                 Text(
@@ -277,6 +280,49 @@ class _SecretTitleState extends State<_SecretTitle> {
       behavior: HitTestBehavior.opaque,
       onTap: _onTap,
       child: widget.child,
+    );
+  }
+}
+
+/// Кнопка «Спросить Fox AI» под поиском.
+class _AskAiButton extends StatelessWidget {
+  const _AskAiButton({required this.state});
+
+  final BrowserState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.primaryContainer,
+      borderRadius: BorderRadius.circular(24),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(24),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => FoxAiScreen(state: state)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          child: Row(
+            children: [
+              Icon(Icons.auto_awesome_rounded, color: scheme.primary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Спросить Fox AI',
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: scheme.onPrimaryContainer)),
+                    Text('Бесплатный ИИ-помощник ответит на любой вопрос',
+                        style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant)),
+                  ],
+                ),
+              ),
+              Icon(Icons.arrow_forward_rounded, color: scheme.primary),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
