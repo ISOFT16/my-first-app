@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Официальный шрифт Google Sans, встроен в приложение (assets/fonts).
+const foxFont = 'Google Sans';
+
 /// Собственная палитра Fox Browser: «песок и кофе».
 class FoxPalette {
   // Светлая тема — песок, крем, латте.
@@ -104,7 +107,7 @@ ColorScheme incognitoScheme() => foxDarkScheme().copyWith(
     );
 
 ThemeData buildTheme(ColorScheme scheme) {
-  final base = ThemeData(useMaterial3: true, colorScheme: scheme);
+  final base = ThemeData(useMaterial3: true, colorScheme: scheme, fontFamily: foxFont);
   final text = base.textTheme.apply(
     bodyColor: scheme.onSurface,
     displayColor: scheme.onSurface,
