@@ -11,8 +11,9 @@ FONTS = sys.argv[1]           # папка со шрифтами GoogleSans-*.tt
 OUT = sys.argv[2]             # куда писать SVG
 os.makedirs(OUT, exist_ok=True)
 
-C = dict(sand='#F3EADF', cream='#FBF6EF', linen='#EDE2D3', latte='#8B6B4A', caramel='#B89B7A', espresso='#3B2F25',
-         bark='#6E5A47', light='#D6BEA0', night='#1E1813', mocha='#29211A', cocoa='#352B22', roast='#43362B', beige='#D9BF9E')
+# палитра «оранжевая лиса на чёрном»: ключи прежние, чтобы геометрия не менялась
+C = dict(sand='#FFF6EC', cream='#FFF4E8', linen='#F5E6D6', latte='#F57C1F', caramel='#F57C1F', espresso='#141414',
+         bark='#161616', light='#FFC27D', night='#0B0B0B', mocha='#111111', cocoa='#171717', roast='#1E1E1E', beige='#FF9A3D')
 
 def fox(x, y, s, brown=C['latte'], dark=C['espresso'], cream=C['cream'], light=C['light']):
     """Мордочка лисы в квадрате (x, y, s) — координаты из fox_logo.dart."""
@@ -57,7 +58,7 @@ def save(name, svg): open(os.path.join(OUT, name), 'w').write(svg)
 
 def mark_circle(cx, cy, r, ring=None):
     """Круглый знак: лиса на кофейном круге (как во второй версии браузера)."""
-    out = f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="#52402F"/>'
+    out = f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{C['bark']}"/>'
     if ring: out += f'<circle cx="{cx}" cy="{cy}" r="{r - ring[1] / 2}" fill="none" stroke="{ring[0]}" stroke-width="{ring[1]}"/>'
     s = r * 1.42
     return out + fox(cx - s / 2, cy - s * 0.53, s)
@@ -66,14 +67,14 @@ def mark_circle(cx, cy, r, ring=None):
 S = 1024
 save('icon-light.svg', wrap(S, S, f'<rect width="{S}" height="{S}" rx="230" fill="{C["sand"]}"/>' + fox(S * .17, S * .14, S * .66)))
 save('icon-dark.svg', wrap(S, S, f'<rect width="{S}" height="{S}" rx="230" fill="{C["night"]}"/>' + fox(S * .17, S * .14, S * .66, light=C['beige'])))
-save('icon-circle.svg', wrap(S, S, f'<rect width="{S}" height="{S}" rx="230" fill="{C["sand"]}"/>' + mark_circle(S / 2, S / 2, S * .4)))
+save('icon-circle.svg', wrap(S, S, f'<rect width="{S}" height="{S}" rx="230" fill="{C["night"]}"/>' + mark_circle(S / 2, S / 2, S * .4)))
 
 # 2. Аватар YouTube 800×800 (YouTube обрежет по кругу — всё важное в центре)
 A = 800
-save('youtube-avatar.svg', wrap(A, A, mark_circle(A / 2, A / 2, A * .44, ring=(C['caramel'], 10)), bg=C['sand']))
+save('youtube-avatar.svg', wrap(A, A, mark_circle(A / 2, A / 2, A * .44, ring=(C['caramel'], 12)), bg=C['night']))
 
 # 3. Водяной знак для видео (прозрачный фон)
-save('watermark.svg', wrap(300, 300, mark_circle(150, 150, 140, ring=(C['cream'], 10))))
+save('watermark.svg', wrap(300, 300, mark_circle(150, 150, 140, ring=(C['caramel'], 12))))
 
 # 4. Горизонтальный логотип: знак + FOX COMPANY
 def horizontal(dark_bg):
@@ -99,7 +100,7 @@ save('logo-vertical-dark.svg', vertical(True))
 # 6. Баннер YouTube 2560×1440: низкополигональный «кофейный» фон, всё важное — в безопасной зоне 1546×423 в центре
 BW, BH = 2560, 1440
 rnd = random.Random(7)
-cols = [C['night'], C['mocha'], C['cocoa'], C['roast'], '#2E251D', '#3A2E24']
+cols = [C['night'], C['mocha'], C['cocoa'], C['roast'], '#141414', '#232323']
 step = 160
 pts = {}
 for j in range(-1, BH // step + 2):
@@ -118,8 +119,8 @@ for j in range(-1, BH // step + 1):
 deco = ''
 for _ in range(26):
     x = rnd.choice([rnd.uniform(0, 420), rnd.uniform(BW - 420, BW)]); y = rnd.uniform(0, BH); s = rnd.uniform(30, 110)
-    col = rnd.choice([C['latte'], C['caramel'], C['bark'], C['beige']])
-    deco += f'<polygon points="{x:.0f},{y:.0f} {x + s:.0f},{y + s * .35:.0f} {x + s * .3:.0f},{y + s:.0f}" fill="{col}" opacity="{rnd.uniform(.25, .6):.2f}"/>'
+    col = rnd.choice([C['latte'], C['beige'], '#C85A12', C['light']])
+    deco += f'<polygon points="{x:.0f},{y:.0f} {x + s:.0f},{y + s * .35:.0f} {x + s * .3:.0f},{y + s:.0f}" fill="{col}" opacity="{rnd.uniform(.35, .85):.2f}"/>'
 glow = (f'<defs><radialGradient id="g" cx="50%" cy="50%" r="45%"><stop offset="0" stop-color="{C["latte"]}" stop-opacity=".35"/>'
         f'<stop offset="1" stop-color="{C["latte"]}" stop-opacity="0"/></radialGradient></defs><rect width="{BW}" height="{BH}" fill="url(#g)"/>')
 r = 175; cx0 = BW / 2 - 420; cy0 = BH / 2
