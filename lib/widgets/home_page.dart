@@ -5,7 +5,7 @@ import '../theme.dart';
 import '../url_utils.dart';
 import '../game/fox_run_game.dart';
 import '../screens/fox_ai_screen.dart';
-import 'fox_logo.dart';
+import 'app_logo.dart';
 
 /// Стартовая страница Fox: приветствие, поиск и плитки любимых сайтов.
 class HomePage extends StatelessWidget {
@@ -64,13 +64,13 @@ class HomePage extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const FoxLogo(size: 40),
+                        const AppLogo(size: 40),
                         const SizedBox(width: 10),
                         Text.rich(
                           TextSpan(children: [
                             TextSpan(
-                              text: 'fox',
-                              style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800, color: scheme.primary),
+                              text: 'vigil',
+                              style: text.titleLarge?.copyWith(fontWeight: FontWeight.w800, color: vigilRed),
                             ),
                             TextSpan(
                               text: ' browser',
@@ -133,7 +133,7 @@ class HomePage extends StatelessWidget {
                     for (var i = 0; i < shortcuts.length; i++)
                       _Tile(
                         entry: shortcuts[i],
-                        color: FoxPalette.tiles[i % FoxPalette.tiles.length],
+                        color: VigilPalette.tiles[i % VigilPalette.tiles.length],
                         onTap: () => state.openInput(shortcuts[i].url),
                       ),
                   ],
@@ -185,8 +185,8 @@ class _SearchCapsule extends StatelessWidget {
           Container(
             width: 46,
             height: 46,
-            decoration: BoxDecoration(color: scheme.primary, shape: BoxShape.circle),
-            child: Icon(Icons.search_rounded, color: scheme.onPrimary),
+            decoration: const BoxDecoration(color: vigilRed, shape: BoxShape.circle),
+            child: const Icon(Icons.search_rounded, color: Colors.white),
           ),
         ],
       ),
@@ -223,7 +223,7 @@ class _Tile extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: FoxPalette.espresso,
+                  color: VigilPalette.white,
                 ),
               ),
             ),
@@ -242,7 +242,7 @@ class _Tile extends StatelessWidget {
   }
 }
 
-/// Пасхалка: 5 быстрых нажатий на «fox browser» открывают игру «Лис в бегах».
+/// Пасхалка: 5 быстрых нажатий на «vigil browser» открывают игру «Лис в бегах».
 class _SecretTitle extends StatefulWidget {
   const _SecretTitle({required this.child});
 
@@ -269,7 +269,7 @@ class _SecretTitleState extends State<_SecretTitle> {
       final left = 5 - _taps;
       messenger.showSnackBar(SnackBar(
         duration: const Duration(milliseconds: 900),
-        content: Text(left == 1 ? 'Ещё одно нажатие… 🦊' : 'Ещё $left нажатия…'),
+        content: Text(left == 1 ? 'Ещё одно нажатие…' : 'Ещё $left нажатия…'),
       ));
     }
   }

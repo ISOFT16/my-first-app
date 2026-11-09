@@ -1,5 +1,5 @@
 name: fox_browser
-description: "Fox Browser — кроссплатформенный браузер в собственном песочно-бежевом стиле."
+description: "Vigil Browser — кроссплатформенный браузер в чёрном стиле с красными акцентами."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -24,7 +24,7 @@ flutter_launcher_icons:
   ios: true
   remove_alpha_ios: true
   image_path: assets/icon.png
-  adaptive_icon_background: "#F3EADF"
+  adaptive_icon_background: "#070707"
   adaptive_icon_foreground: assets/icon_foreground.png
   windows:
     generate: true
@@ -32,6 +32,9 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/logo.png
 
   # Официальный шрифт Google Sans (SIL Open Font License, см. assets/fonts/OFL.txt).
   fonts:

@@ -1,9 +1,9 @@
-// Генерирует папки android/, ios/, windows/ и настраивает их для Fox Browser.
+// Генерирует папки android/, ios/, windows/ и настраивает их для Vigil Browser.
 // Запуск из корня проекта:  dart run tool/setup.dart
 import 'dart:io';
 
 Future<void> main() async {
-  stdout.writeln('🦊 Fox Browser: создаю платформенные проекты...');
+  stdout.writeln('Vigil Browser: создаю платформенные проекты...');
   final result = await Process.run(
     'flutter',
     [
@@ -20,6 +20,7 @@ Future<void> main() async {
   if (result.exitCode != 0) exit(result.exitCode);
 
   _patchAndroid();
+  _patchLaunchScreen();
   _patchIos();
   _patchWindows();
 
@@ -59,22 +60,33 @@ void _patchAndroid() {
         '<uses-permission android:name="android.permission.INTERNET"/>\n    <application',
       );
     }
-    s = s.replaceFirst(RegExp(r'android:label="[^"]*"'), 'android:label="Fox Browser"');
+    s = s.replaceFirst(RegExp(r'android:label="[^"]*"'), 'android:label="Vigil Browser"');
     if (!s.contains('usesCleartextTraffic')) {
       s = s.replaceFirst(
-        'android:label="Fox Browser"',
-        'android:label="Fox Browser"\n        android:usesCleartextTraffic="true"',
+        'android:label="Vigil Browser"',
+        'android:label="Vigil Browser"\n        android:usesCleartextTraffic="true"',
       );
     }
     return s;
   });
 }
 
+void _patchLaunchScreen() {
+  for (final path in [
+    'android/app/src/main/res/drawable/launch_background.xml',
+    'android/app/src/main/res/drawable-v21/launch_background.xml',
+  ]) {
+    _edit(path, (s) => s
+        .replaceAll('@android:color/white', '@android:color/black')
+        .replaceAll('?android:colorBackground', '@android:color/black'));
+  }
+}
+
 void _patchIos() {
   _edit('ios/Runner/Info.plist', (s) {
     s = s.replaceFirstMapped(
       RegExp(r'(<key>CFBundleDisplayName</key>\s*<string>)[^<]*(</string>)'),
-      (m) => '${m[1]}Fox Browser${m[2]}',
+      (m) => '${m[1]}Vigil Browser${m[2]}',
     );
     if (!s.contains('NSAppTransportSecurity')) {
       final i = s.lastIndexOf('</dict>');
@@ -87,5 +99,5 @@ void _patchIos() {
 }
 
 void _patchWindows() {
-  _edit('windows/runner/main.cpp', (s) => s.replaceAll('L"fox_browser"', 'L"Fox Browser"'));
+  _edit('windows/runner/main.cpp', (s) => s.replaceAll('L"fox_browser"', 'L"Vigil Browser"'));
 }

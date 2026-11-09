@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../ai/fox_ai.dart';
+import '../theme.dart';
 import '../browser_state.dart';
-import '../widgets/fox_logo.dart';
+import '../widgets/app_logo.dart';
 
 /// Чат с Vigil AI в стиле браузера.
 class FoxAiScreen extends StatefulWidget {
@@ -144,10 +145,10 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const FoxLogo(size: 28),
+            const AppLogo(size: 28),
             const SizedBox(width: 8),
             Text.rich(TextSpan(children: [
-              TextSpan(text: 'vigil', style: TextStyle(fontWeight: FontWeight.w800, color: scheme.primary)),
+              TextSpan(text: 'vigil', style: const TextStyle(fontWeight: FontWeight.w800, color: vigilRed)),
               const TextSpan(text: ' ai', style: TextStyle(fontWeight: FontWeight.w400)),
             ])),
           ],
@@ -208,7 +209,7 @@ class _EmptyState extends StatelessWidget {
                 height: 104,
                 decoration: BoxDecoration(color: scheme.primaryContainer, shape: BoxShape.circle),
                 alignment: Alignment.center,
-                child: const FoxLogo(size: 72),
+                child: const AppLogo(size: 72),
               ),
               const SizedBox(height: 18),
               Text('Привет! Я Vigil AI', style: text.headlineMedium, textAlign: TextAlign.center),
@@ -304,7 +305,7 @@ class _Bubble extends StatelessWidget {
           if (!user) ...[
             const Padding(
               padding: EdgeInsets.only(bottom: 4),
-              child: FoxLogo(size: 26),
+              child: AppLogo(size: 26),
             ),
             const SizedBox(width: 6),
           ],
@@ -352,7 +353,7 @@ class _ThinkingBubbleState extends State<_ThinkingBubble> with SingleTickerProvi
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         children: [
-          const FoxLogo(size: 26),
+          const AppLogo(size: 26),
           const SizedBox(width: 6),
           if (widget.wait > 0)
             Container(
@@ -452,7 +453,7 @@ class _Composer extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Material(
-                color: busy ? scheme.surfaceContainerHigh : scheme.primary,
+                color: busy ? scheme.surfaceContainerHigh : vigilRed,
                 shape: const CircleBorder(),
                 child: InkWell(
                   customBorder: const CircleBorder(),
@@ -464,7 +465,7 @@ class _Composer extends StatelessWidget {
                             padding: const EdgeInsets.all(14),
                             child: CircularProgressIndicator(strokeWidth: 2.4, color: scheme.primary),
                           )
-                        : Icon(Icons.arrow_upward_rounded, color: scheme.onPrimary),
+                        : const Icon(Icons.arrow_upward_rounded, color: Colors.white),
                   ),
                 ),
               ),

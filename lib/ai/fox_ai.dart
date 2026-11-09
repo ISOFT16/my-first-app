@@ -29,14 +29,14 @@ class FoxAiRateLimit extends FoxAiException {
   final int seconds;
 }
 
-/// Vigil AI — ИИ-помощник Fox Browser.
+/// Vigil AI — ИИ-помощник Vigil Browser.
 ///
 /// По умолчанию работает бесплатно и без ключа через открытый сервис
 /// Pollinations (text.pollinations.ai). В настройках можно подключить любой
 /// свой OpenAI-совместимый сервер (адрес, ключ, модель).
 class FoxAi {
   static const systemPrompt =
-      'Ты — Vigil AI, умный и дружелюбный ИИ-помощник, встроенный в браузер Fox Browser. '
+      'Ты — Vigil AI, умный и дружелюбный ИИ-помощник, встроенный в браузер Vigil Browser. '
       'Тебя зовут Vigil AI. '
       'Отвечай на любые вопросы пользователя: учёба, наука, программирование, советы, '
       'тексты, переводы, идеи, рецепты, здоровье и всё остальное. '

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../browser_state.dart';
 import '../theme.dart';
 import '../url_utils.dart';
-import '../widgets/fox_logo.dart';
+import '../widgets/app_logo.dart';
 
 /// Обзор вкладок Fox: карточки с цветной «крышкой» и нижняя капсула действий.
 class TabsScreen extends StatelessWidget {
@@ -42,15 +42,15 @@ class TabsScreen extends StatelessWidget {
               final tab = state.tabs[i];
               final selected = i == state.currentIndex;
               final cap = tab.incognito
-                  ? const Color(0xFF4A4D3E)
-                  : FoxPalette.tiles[i % FoxPalette.tiles.length];
+                  ? const Color(0xFF181B24)
+                  : VigilPalette.tiles[i % VigilPalette.tiles.length];
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 decoration: BoxDecoration(
                   color: scheme.surfaceContainerLowest,
                   borderRadius: BorderRadius.circular(22),
                   border: Border.all(
-                    color: selected ? scheme.primary : scheme.outlineVariant,
+                    color: selected ? vigilRed : scheme.outlineVariant,
                     width: selected ? 2.5 : 1,
                   ),
                 ),
@@ -82,7 +82,7 @@ class TabsScreen extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: text.labelLarge?.copyWith(
                                     fontWeight: FontWeight.w700,
-                                    color: tab.incognito ? Colors.white : FoxPalette.espresso,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -91,7 +91,7 @@ class TabsScreen extends StatelessWidget {
                                 icon: Icon(
                                   Icons.close_rounded,
                                   size: 18,
-                                  color: tab.incognito ? Colors.white : FoxPalette.espresso,
+                                  color: Colors.white,
                                 ),
                                 onPressed: () => state.closeTab(i),
                               ),
@@ -101,7 +101,7 @@ class TabsScreen extends StatelessWidget {
                         Expanded(
                           child: Center(
                             child: tab.isHome
-                                ? const FoxLogo(size: 56)
+                                ? const AppLogo(size: 56)
                                 : Padding(
                                     padding: const EdgeInsets.all(12),
                                     child: Column(

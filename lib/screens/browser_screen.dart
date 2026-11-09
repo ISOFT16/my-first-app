@@ -172,8 +172,8 @@ class _RoundButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final bg = filled ? scheme.primary : scheme.surfaceContainerHigh;
-    final fg = filled ? scheme.onPrimary : scheme.onSurface;
+    final bg = filled ? vigilRed : scheme.surfaceContainerHigh;
+    final fg = filled ? Colors.white : scheme.onSurface;
     return Tooltip(
       message: tooltip,
       child: Material(

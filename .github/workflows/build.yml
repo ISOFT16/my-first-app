@@ -1,4 +1,4 @@
-name: Build Fox Browser
+name: Build Vigil Browser
 
 on:
   push:
@@ -29,20 +29,20 @@ jobs:
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
-          name: FoxBrowser-android
+          name: VigilBrowser-android
           path: build/app/outputs/flutter-apk/app-release.apk
       - name: Выложить APK в Releases
         run: |
-          cp build/app/outputs/flutter-apk/app-release.apk FoxBrowser.apk
+          cp build/app/outputs/flutter-apk/app-release.apk VigilBrowser.apk
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest FoxBrowser.apk --target "$GITHUB_SHA" \
-            --title "Fox Browser (последняя сборка)" \
-            --notes "Скачайте FoxBrowser.apk и установите на Android."
+          gh release create latest VigilBrowser.apk --target "$GITHUB_SHA" \
+            --title "Vigil Browser (последняя сборка)" \
+            --notes "Скачайте VigilBrowser.apk и установите на Android."
         env:
           GH_TOKEN: ${{ github.token }}
 
   ai-check:
-    name: Проверка Fox AI (бесплатный сервер)
+    name: Проверка Vigil AI (бесплатный сервер)
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -50,7 +50,7 @@ jobs:
         run: |
           curl -sS -m 90 -X POST https://text.pollinations.ai/openai \
             -H 'Content-Type: application/json' \
-            -d '{"model":"openai","referrer":"foxbrowser","private":true,"messages":[{"role":"system","content":"Ты Fox AI."},{"role":"user","content":"Привет! Кто ты и какая столица Франции? Ответь коротко."}]}' \
+            -d '{"model":"openai","referrer":"foxbrowser","private":true,"messages":[{"role":"system","content":"Ты Vigil AI."},{"role":"user","content":"Привет! Кто ты и какая столица Франции? Ответь коротко."}]}' \
             -w '\nHTTP %{http_code}\n' | tail -c 1500
           echo "----- GET fallback -----"
           curl -sS -m 90 "https://text.pollinations.ai/$(python3 -c 'import urllib.parse;print(urllib.parse.quote("Сколько будет 2+2? Ответь одним числом."))')?model=openai&private=true&referrer=foxbrowser" \
@@ -71,7 +71,7 @@ jobs:
       - run: flutter build windows --release
       - uses: actions/upload-artifact@v4
         with:
-          name: FoxBrowser-windows
+          name: VigilBrowser-windows
           path: build/windows/x64/runner/Release/
 
   ios:
@@ -91,8 +91,8 @@ jobs:
         run: |
           mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
-          zip -qr FoxBrowser-unsigned.ipa Payload
+          zip -qr VigilBrowser-unsigned.ipa Payload
       - uses: actions/upload-artifact@v4
         with:
-          name: FoxBrowser-ios-unsigned
-          path: FoxBrowser-unsigned.ipa
+          name: VigilBrowser-ios-unsigned
+          path: VigilBrowser-unsigned.ipa

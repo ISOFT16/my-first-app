@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Официальный шрифт Google Sans, встроен в приложение (assets/fonts).
 const foxFont = 'Google Sans';
 
-/// Собственная палитра Fox Browser: «песок и кофе».
+/// Палитра «песок и кофе» — осталась для мини-игры «Лис в бегах» (ностальгия).
 class FoxPalette {
   // Светлая тема — песок, крем, латте.
   static const sand = Color(0xFFF3EADF);
@@ -33,6 +33,63 @@ class FoxPalette {
     Color(0xFFCDB89A), // пшеница
   ];
 }
+
+/// Фирменный красный Vigil — для немногих акцентов.
+const vigilRed = Color(0xFFE5161C);
+
+/// Палитра Vigil Browser: чёрный, белый и немного красного.
+class VigilPalette {
+  static const black = Color(0xFF000000);
+  static const coal = Color(0xFF0E0E0E);
+  static const graphite = Color(0xFF161616);
+  static const smoke = Color(0xFF1E1E1E);
+  static const ash = Color(0xFF2A2A2A);
+  static const white = Color(0xFFF2F2F2);
+  static const grey = Color(0xFF9E9E9E);
+
+  /// Плитки быстрого доступа — оттенки графита.
+  static const tiles = [
+    Color(0xFF1C1C1C),
+    Color(0xFF222222),
+    Color(0xFF191919),
+    Color(0xFF262626),
+    Color(0xFF1F1F1F),
+    Color(0xFF242424),
+  ];
+}
+
+ColorScheme vigilScheme() => const ColorScheme(
+      brightness: Brightness.dark,
+      primary: VigilPalette.white,
+      onPrimary: VigilPalette.black,
+      primaryContainer: VigilPalette.smoke,
+      onPrimaryContainer: Colors.white,
+      secondary: VigilPalette.grey,
+      onSecondary: VigilPalette.black,
+      secondaryContainer: VigilPalette.graphite,
+      onSecondaryContainer: Colors.white,
+      tertiary: vigilRed,
+      onTertiary: Colors.white,
+      error: Color(0xFFFF5A5A),
+      onError: VigilPalette.black,
+      errorContainer: Color(0xFF3A0D0F),
+      onErrorContainer: Color(0xFFFFDADA),
+      surface: VigilPalette.black,
+      onSurface: VigilPalette.white,
+      onSurfaceVariant: VigilPalette.grey,
+      surfaceContainerLowest: Color(0xFF0A0A0A),
+      surfaceContainerLow: VigilPalette.coal,
+      surfaceContainer: Color(0xFF111111),
+      surfaceContainerHigh: VigilPalette.smoke,
+      surfaceContainerHighest: VigilPalette.ash,
+      outline: Color(0xFF3A3A3A),
+      outlineVariant: Color(0xFF232323),
+      inverseSurface: VigilPalette.white,
+      onInverseSurface: VigilPalette.black,
+      inversePrimary: VigilPalette.black,
+      shadow: Colors.black,
+      surfaceTint: Colors.transparent,
+    );
 
 ColorScheme foxLightScheme() => const ColorScheme(
       brightness: Brightness.light,
@@ -96,14 +153,14 @@ ColorScheme foxDarkScheme() => const ColorScheme(
       surfaceTint: Colors.transparent,
     );
 
-/// Инкогнито — тёмный «ночной лес»: оливково-серые тона.
-ColorScheme incognitoScheme() => foxDarkScheme().copyWith(
-      primary: const Color(0xFFB7B08F),
-      surface: const Color(0xFF181A15),
-      surfaceContainer: const Color(0xFF22241D),
-      surfaceContainerHigh: const Color(0xFF2B2E25),
-      surfaceContainerHighest: const Color(0xFF353829),
-      secondaryContainer: const Color(0xFF2B2E25),
+/// Тайная вкладка — чёрный с холодным оттенком.
+ColorScheme incognitoScheme() => vigilScheme().copyWith(
+      primary: const Color(0xFFC9CCD6),
+      surface: const Color(0xFF05060A),
+      surfaceContainer: const Color(0xFF0E1016),
+      surfaceContainerHigh: const Color(0xFF181B24),
+      surfaceContainerHighest: const Color(0xFF22262F),
+      secondaryContainer: const Color(0xFF181B24),
     );
 
 ThemeData buildTheme(ColorScheme scheme) {
@@ -171,7 +228,7 @@ ThemeData buildTheme(ColorScheme scheme) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
     ),
     progressIndicatorTheme: ProgressIndicatorThemeData(
-      color: scheme.primary,
+      color: scheme.tertiary,
       linearTrackColor: Colors.transparent,
     ),
   );
