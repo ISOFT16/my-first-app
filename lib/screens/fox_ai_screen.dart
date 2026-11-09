@@ -8,7 +8,7 @@ import '../ai/fox_ai.dart';
 import '../browser_state.dart';
 import '../widgets/fox_logo.dart';
 
-/// Чат с Fox AI в стиле браузера.
+/// Чат с Vigil AI в стиле браузера.
 class FoxAiScreen extends StatefulWidget {
   const FoxAiScreen({super.key, required this.state});
 
@@ -76,7 +76,7 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
     } catch (e) {
       final msg = e is FoxAiException
           ? e.message
-          : 'Не получилось связаться с Fox AI. Проверьте интернет и попробуйте ещё раз.';
+          : 'Не получилось связаться с Vigil AI. Проверьте интернет и попробуйте ещё раз.';
       reply = AiMessage(fromUser: false, text: msg, isError: true);
     }
     if (!mounted) return;
@@ -147,7 +147,7 @@ class _FoxAiScreenState extends State<FoxAiScreen> {
             const FoxLogo(size: 28),
             const SizedBox(width: 8),
             Text.rich(TextSpan(children: [
-              TextSpan(text: 'fox', style: TextStyle(fontWeight: FontWeight.w800, color: scheme.primary)),
+              TextSpan(text: 'vigil', style: TextStyle(fontWeight: FontWeight.w800, color: scheme.primary)),
               const TextSpan(text: ' ai', style: TextStyle(fontWeight: FontWeight.w400)),
             ])),
           ],
@@ -211,7 +211,7 @@ class _EmptyState extends StatelessWidget {
                 child: const FoxLogo(size: 72),
               ),
               const SizedBox(height: 18),
-              Text('Привет! Я Fox AI', style: text.headlineMedium, textAlign: TextAlign.center),
+              Text('Привет! Я Vigil AI', style: text.headlineMedium, textAlign: TextAlign.center),
               const SizedBox(height: 6),
               Text(
                 'Спросите меня о чём угодно — объясню, посоветую, переведу или придумаю.',
@@ -443,7 +443,7 @@ class _Composer extends StatelessWidget {
                     decoration: InputDecoration(
                       isCollapsed: true,
                       border: InputBorder.none,
-                      hintText: 'Спросите Fox AI…',
+                      hintText: 'Спросите Vigil AI…',
                       hintStyle: TextStyle(color: scheme.onSurfaceVariant),
                     ),
                     onSubmitted: (_) => onSend(),

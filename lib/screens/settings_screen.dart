@@ -89,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
               _Section(
-                title: 'Fox AI',
+                title: 'Vigil AI',
                 children: [
                   ListTile(
                     leading: const Icon(Icons.auto_awesome_rounded),
@@ -102,7 +102,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   ListTile(
                     leading: const Icon(Icons.delete_outline_rounded),
-                    title: const Text('Очистить чат Fox AI'),
+                    title: const Text('Очистить чат Vigil AI'),
                     subtitle: Text('Сообщений: ${state.aiChat.length}'),
                     onTap: state.aiChat.isEmpty
                         ? null
@@ -148,13 +148,13 @@ Future<void> _editAiServerDialog(BuildContext context, BrowserState state) async
     context: context,
     builder: (c) => AlertDialog(
       icon: const Icon(Icons.auto_awesome_rounded),
-      title: const Text('Сервер Fox AI'),
+      title: const Text('Сервер Vigil AI'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'Оставьте адрес пустым — Fox AI будет работать бесплатно без ключа. '
+              'Оставьте адрес пустым — Vigil AI будет работать бесплатно без ключа. '
               'Или укажите любой OpenAI-совместимый сервер со своим ключом.',
             ),
             const SizedBox(height: 12),

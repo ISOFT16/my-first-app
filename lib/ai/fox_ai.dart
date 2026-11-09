@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-/// Одно сообщение в чате Fox AI.
+/// Одно сообщение в чате Vigil AI.
 class AiMessage {
   AiMessage({required this.fromUser, required this.text, this.isError = false});
 
@@ -25,19 +25,19 @@ class FoxAiException implements Exception {
 
 /// Бесплатный режим ограничен: примерно один ответ в 45 секунд.
 class FoxAiRateLimit extends FoxAiException {
-  FoxAiRateLimit(this.seconds) : super('Бесплатный Fox AI отвечает раз в 45 секунд. Подождите $seconds сек.');
+  FoxAiRateLimit(this.seconds) : super('Бесплатный Vigil AI отвечает раз в 45 секунд. Подождите $seconds сек.');
   final int seconds;
 }
 
-/// Fox AI — ИИ-помощник Fox Browser.
+/// Vigil AI — ИИ-помощник Fox Browser.
 ///
 /// По умолчанию работает бесплатно и без ключа через открытый сервис
 /// Pollinations (text.pollinations.ai). В настройках можно подключить любой
 /// свой OpenAI-совместимый сервер (адрес, ключ, модель).
 class FoxAi {
   static const systemPrompt =
-      'Ты — Fox AI, умный и дружелюбный ИИ-помощник, встроенный в браузер Fox Browser. '
-      'Тебя зовут Fox AI, твой символ — лиса. '
+      'Ты — Vigil AI, умный и дружелюбный ИИ-помощник, встроенный в браузер Fox Browser. '
+      'Тебя зовут Vigil AI. '
       'Отвечай на любые вопросы пользователя: учёба, наука, программирование, советы, '
       'тексты, переводы, идеи, рецепты, здоровье и всё остальное. '
       'Отвечай на языке пользователя (по умолчанию — по-русски), понятно, тепло и по делу. '
@@ -51,7 +51,7 @@ class FoxAi {
 
   final http.Client _client = http.Client();
 
-  /// Отправляет историю чата и возвращает ответ Fox AI.
+  /// Отправляет историю чата и возвращает ответ Vigil AI.
   Future<String> ask(
     List<AiMessage> history, {
     String base = '',
@@ -100,7 +100,7 @@ class FoxAi {
       final body = utf8.decode(r.bodyBytes).trim();
       _checkRateLimit(r.statusCode, body);
       if (r.statusCode != 200 || body.isEmpty) {
-        throw FoxAiException('Fox AI сейчас недоступен (код ${r.statusCode}). Попробуйте ещё раз чуть позже.');
+        throw FoxAiException('Vigil AI сейчас недоступен (код ${r.statusCode}). Попробуйте ещё раз чуть позже.');
       }
       return clean(body);
     }

@@ -284,7 +284,7 @@ class _SecretTitleState extends State<_SecretTitle> {
   }
 }
 
-/// Кнопка «Спросить Fox AI» под поиском.
+/// Кнопка «Спросить Vigil AI» под поиском.
 class _AskAiButton extends StatelessWidget {
   const _AskAiButton({required this.state});
 
@@ -311,7 +311,7 @@ class _AskAiButton extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Спросить Fox AI',
+                    Text('Спросить Vigil AI',
                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: scheme.onPrimaryContainer)),
                     Text('Бесплатный ИИ-помощник ответит на любой вопрос',
                         style: TextStyle(fontSize: 13, color: scheme.onSurfaceVariant)),

@@ -70,7 +70,7 @@ class BrowserState extends ChangeNotifier {
   List<PageEntry> history = [];
   List<PageEntry> bookmarks = [];
 
-  // Fox AI.
+  // Vigil AI.
   String aiBase = '';
   String aiKey = '';
   String aiModel = '';

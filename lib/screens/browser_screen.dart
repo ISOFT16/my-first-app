@@ -314,7 +314,7 @@ void showFoxMenu(BuildContext context, BrowserState state) {
                   iconColor: scheme.onPrimary,
                   textColor: scheme.onPrimary,
                   leading: const Icon(Icons.auto_awesome_rounded),
-                  title: const Text('Fox AI', style: TextStyle(fontWeight: FontWeight.w700)),
+                  title: const Text('Vigil AI', style: TextStyle(fontWeight: FontWeight.w700)),
                   subtitle: Text('Спросите что угодно', style: TextStyle(color: scheme.onPrimary.withValues(alpha: 0.8))),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => open(FoxAiScreen(state: state)),
